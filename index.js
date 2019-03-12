@@ -3,8 +3,14 @@ const colors = require('colors');
 const minimist = require('minimist');
 
 const secrets = require('./secrets');
+const sendbirdKeys = require('./publicSendbirdKeys');
 
 const args = require('minimist')(process.argv.slice(2));
+
+const DEFAULTS = {
+    MESSAGES_TO_FETCH: 200,
+    POLL_RATE_MS: 5000
+}
 
 String.prototype.singleLine = function() {
     return this.replace(/\n/mg, " ");
@@ -16,14 +22,31 @@ async function main() {
         await send(args.m);
         return;
     }
+    else if(args.z) {
+        pollIndefinitely(args.z || DEFAULTS.POLL_RATE_MS);
+    }
+    else {
+
+        const messages = await fetchMessages(args.n || DEFAULTS.MESSAGES_TO_FETCH);
+
+        messages.forEach(message => {
+            console.log(`${message.time.toLocaleString("en-US").gray} ${message.user.blue}: ${message.text.green}`);
+        });
+    }
+
+}
+
+main();
+
+async function fetchMessages(numberOfMessages) {
 
     const options = {
         method: 'GET',
-        url: 'https://sendbirdproxy-03ff847212a8b1175.chat.redditmedia.com/v3/group_channels/sendbird_group_channel_7308797_b0bcd5ad6b2df37866f21e2ef14391566c42f1b4/messages',
+        url: sendbirdKeys.fetchUrl,
         qs: {
             is_sdk: 'true',
             message_ts: `${Date.now()}`,
-            prev_limit: `${args.n || "200"}`,
+            prev_limit: `${numberOfMessages}`,
             next_limit: '0',
             include: 'false',
             reverse: 'true',
@@ -39,21 +62,26 @@ async function main() {
     const response = JSON.parse(responseText);
     const messages = (
         response.messages
-            .map(message => ({user: message.user.nickname, text: message.message.singleLine(), time: new Date(message.created_at)}))
+            .map(message => ({
+                user: message.user.nickname,
+                text: message.message.singleLine(),
+                time: new Date(message.created_at)})
+            )
             .sort((a, b) => a.created_at < b.created_at ? 1 : -1)
     );
 
-    messages.forEach(message => {
-        console.log(`${message.time.toLocaleString("en-US").gray} ${message.user.blue}: ${message.text.green}`);
-    });
+    return messages;
 }
 
-main();
+async function pollIndefinitely(pollRateMs) {
+    setInterval(() => {
+
+    }, pollRateMs);
+}
 
 async function send(message) {
 
     const SendBird = require('sendbird');
-    const sendbirdKeys = require('./publicSendbirdKeys');
 
     const sendbird = new SendBird({ appId: sendbirdKeys.appId });
 
