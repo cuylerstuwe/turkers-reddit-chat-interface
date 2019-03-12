@@ -2,6 +2,8 @@
 
 Pipes recent messages from the Turkers Reddit chat to standard output, line-by-line, in descending chronological order.
 
+**NEW**: With the `-m` option, this tool can now send messages as well *(see below)*.
+
 # Setting Up
 
 1. Make sure [Node](https://nodejs.org/en/download/) is installed.
