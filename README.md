@@ -35,3 +35,5 @@ Defaults to `200` messages if this argument is not specified.
 Instead of getting the most recent messages, send a message.
 
 **NOTE**: This requires that the object exported from `secrets.js` has accurate `userId` and `accessToken` properties.
+
+*Special thanks to [saqfish](https://www.github.com/saqfish) for going through the trouble of figuring out how to interface with the SendBird API and digging out the relevant key and group ID info.*
