@@ -4,6 +4,8 @@ Pipes recent messages from the Turkers Reddit chat to standard output, line-by-l
 
 **NEW**: With the `-m` option, this tool can now send messages as well *(see below)*.
 
+**NEW**: With `-z`, you can set up a terminal to be dedicated to polling the chat indefinitely *(see below)*.
+
 # Setting Up
 
 1. Make sure [Node](https://nodejs.org/en/download/) is installed.
@@ -39,3 +41,7 @@ Instead of getting the most recent messages, send a message.
 **NOTE**: This requires that the object exported from `secrets.js` has accurate `userId` and `accessToken` properties.
 
 *Special thanks to [saqfish](https://www.github.com/saqfish) for going through the trouble of figuring out how to interface with the SendBird API and digging out the relevant key and group ID info.*
+
+### `-z SOME_INTERVAL_AS_MILLISECONDS`
+
+Instead of getting the most recent messages only once and then quitting, check indefinitely for new messages at whatever interval `SOME_INTERVAL_AS_MILLISECONDS` is replaced by. 
