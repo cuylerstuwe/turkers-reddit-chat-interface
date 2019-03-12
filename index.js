@@ -9,6 +9,7 @@ const args = require('minimist')(process.argv.slice(2));
 
 const DEFAULTS = {
     MESSAGES_TO_FETCH: 200,
+    MESSAGES_TO_POLL_BUFFER: 50,
     POLL_RATE_MS: 5000
 }
 
@@ -16,27 +17,9 @@ String.prototype.singleLine = function() {
     return this.replace(/\n/mg, " ");
 }
 
-async function main() {
-
-    if(args.m) {
-        await send(args.m);
-        return;
-    }
-    else if(args.z) {
-        pollIndefinitely(args.z || DEFAULTS.POLL_RATE_MS);
-    }
-    else {
-
-        const messages = await fetchMessages(args.n || DEFAULTS.MESSAGES_TO_FETCH);
-
-        messages.forEach(message => {
-            console.log(`${message.time.toLocaleString("en-US").gray} ${message.user.blue}: ${message.text.green}`);
-        });
-    }
-
+function printStyledMessage(message) {
+    console.log(`${message.time.toLocaleString("en-US").gray} ${message.user.blue}: ${message.text.green}`);
 }
-
-main();
 
 async function fetchMessages(numberOfMessages) {
 
@@ -74,8 +57,20 @@ async function fetchMessages(numberOfMessages) {
 }
 
 async function pollIndefinitely(pollRateMs) {
-    setInterval(() => {
 
+    const seenMessages = {};
+
+    console.log(`Polling for messages every ${pollRateMs}...`.yellow);
+
+    setInterval(async () => {
+        const messages = await fetchMessages(DEFAULTS.MESSAGES_TO_POLL_BUFFER);
+        messages.forEach(message => {
+            const messageIdentifier = `${message.user}${message.time.toString()}`;
+            if(seenMessages[messageIdentifier] === undefined) {
+                printStyledMessage(message);
+                seenMessages[messageIdentifier] = true;
+            }
+        });
     }, pollRateMs);
 }
 
@@ -107,3 +102,26 @@ async function send(message) {
 
     process.exit(errorCode ? 1 : 0);
 }
+
+async function main() {
+
+    if(args.m) {
+        await send(args.m);
+        return;
+    }
+    else if(args.z) {
+        pollIndefinitely(args.z || DEFAULTS.POLL_RATE_MS);
+        return;
+    }
+    else {
+
+        const messages = await fetchMessages(args.n || DEFAULTS.MESSAGES_TO_FETCH);
+
+        messages.forEach(message => {
+            printStyledMessage(message);
+        });
+    }
+
+}
+
+main();
