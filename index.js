@@ -6,6 +6,10 @@ const secrets = require('./secrets');
 
 const args = require('minimist')(process.argv.slice(2));
 
+String.prototype.singleLine = function() {
+    return this.replace(/\n/mg, " ");
+}
+
 async function main() {
 
     if(args.m) {
@@ -35,7 +39,7 @@ async function main() {
     const response = JSON.parse(responseText);
     const messages = (
         response.messages
-            .map(message => ({user: message.user.nickname, text: message.message, time: new Date(message.created_at)}))
+            .map(message => ({user: message.user.nickname, text: message.message.singleLine(), time: new Date(message.created_at)}))
             .sort((a, b) => a.created_at < b.created_at ? 1 : -1)
     );
 
