@@ -24,8 +24,14 @@ module.exports = {
 
 # Optional Parameters
 
-**`-n NUM_OF_POSTS`**
+### `-n NUM_OF_POSTS`
 
 By default, the tool fetches the `200` most recent posts. However, this can be overridden with then `-n` option, replacing `NUM_OF_POSTS` with the desired number of posts to fetch.
 
-Defaults to `200` messages
+Defaults to `200` messages if this argument is not specified.
+
+### `-m SOME_MESSAGE`
+
+Instead of getting the most recent messages, send a message.
+
+**NOTE**: This requires that the object exported from `secrets.js` has accurate `userId` and `accessToken` properties.

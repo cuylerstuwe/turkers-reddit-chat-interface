@@ -8,7 +8,12 @@ const args = require('minimist')(process.argv.slice(2));
 
 async function main() {
 
-    var options = {
+    if(args.m) {
+        await send(args.m);
+        return;
+    }
+
+    const options = {
         method: 'GET',
         url: 'https://sendbirdproxy-03ff847212a8b1175.chat.redditmedia.com/v3/group_channels/sendbird_group_channel_7308797_b0bcd5ad6b2df37866f21e2ef14391566c42f1b4/messages',
         qs: {
@@ -40,3 +45,33 @@ async function main() {
 }
 
 main();
+
+async function send(message) {
+
+    const SendBird = require('sendbird');
+    const sendbirdKeys = require('./publicSendbirdKeys');
+
+    const sendbird = new SendBird({ appId: sendbirdKeys.appId });
+
+    let groupChannel;
+
+    await new Promise(resolve => {
+        sendbird.connect(secrets.userId, secrets.accessToken, (_, err) => {
+            sendbird.GroupChannel.getChannel(sendbirdKeys.channelId, (gc, err) => {
+                groupChannel = gc;
+                groupChannel.refresh(() => {
+                    resolve();
+                });
+            });
+        });
+    });
+
+    const messageParams = new sendbird.UserMessageParams();
+    messageParams.message = message;
+
+    const errorCode = await new Promise(resolve => {
+        groupChannel.sendUserMessage(messageParams, (_, err) => { resolve(err); });
+    });
+
+    process.exit(errorCode ? 1 : 0);
+}
