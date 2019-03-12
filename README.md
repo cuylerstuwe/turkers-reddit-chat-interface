@@ -4,7 +4,7 @@ Pipes recent messages from the Turkers Reddit chat to standard output, line-by-l
 
 # Setting Up
 
-1. Make sure Node is installed.
+1. Make sure [Node](https://nodejs.org/en/download/) is installed.
 
 2. Run `npm i` in the project's base directory to fetch and set up dependencies.
 
