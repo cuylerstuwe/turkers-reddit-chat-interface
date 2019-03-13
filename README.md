@@ -14,9 +14,11 @@ Pipes recent messages from the Turkers Reddit chat to standard output, line-by-l
 
 3. Go to the Reddit chat, open the Chrome developer console, switch to the Network tab, and scroll back in the chat log to force a reload.
 
-4. A new network request will appear which has `Session-Key` as one of the request headers. Copy this value, you'll use it shortly. **HINT**: If you're having a hard time finding this manually, here's a tip: Click the magnifying glass in the network area to bring up a search prompt that will search network requests, and then search for `Session-Key`. If you click the search result where `Session-Key: ` is followed by an alphanumeric string, you can click this search result, and Chrome will bring you to the appropriate header in the Network panel and highlight the relevant entry. From there, you can copy/paste the appropriate key.
+4. A new network request will appear which has `Session-Key` as one of the request headers. Copy this value, you'll use it shortly.
 
-3. Create a `secrets.js` file in the base directory which follows this template:
+**HINT**: If you're having a hard time finding this manually, here's a tip: Click the magnifying glass in the network area to bring up a search prompt that will search network requests, and then search for `Session-Key`. If you click the search result where `Session-Key: ` is followed by an alphanumeric string, you can click this search result, and Chrome will bring you to the appropriate header in the Network panel and highlight the relevant entry. From there, you can copy/paste the appropriate key.
+
+5. Create a `secrets.js` file in the base directory which follows this template:
 
 ```js
 module.exports = {
