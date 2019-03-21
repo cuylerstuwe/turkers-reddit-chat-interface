@@ -90,8 +90,7 @@ async function send(message) {
         });
     });
 
-    const messageParams = new sendbird.UserMessageParams();
-    messageParams.message = message;
+    const messageParams = {... new sendbird.UserMessageParams(), message};
 
     const errorCode = await new Promise(resolve => {
         groupChannel.sendUserMessage(messageParams, (_, err) => { resolve(err); });
