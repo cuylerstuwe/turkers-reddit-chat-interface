@@ -80,14 +80,11 @@ async function send(message) {
 
     const sendbird = new SendBird({ appId: sendbirdKeys.appId });
 
-    let groupChannel;
-
-    await new Promise(resolve => {
+    const groupChannel = await new Promise(resolve => {
         sendbird.connect(secrets.userId, secrets.accessToken, (_, err) => {
             sendbird.GroupChannel.getChannel(sendbirdKeys.channelId, (gc, err) => {
-                groupChannel = gc;
                 groupChannel.refresh(() => {
-                    resolve();
+                    resolve(gc);
                 });
             });
         });
